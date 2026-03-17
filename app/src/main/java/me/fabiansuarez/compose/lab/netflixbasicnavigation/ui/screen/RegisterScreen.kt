@@ -23,6 +23,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import me.fabiansuarez.compose.lab.netflixbasicnavigation.ui.theme.*
 
 // ─── RegisterScreen ───────────────────────────────────────────────────────────
@@ -33,7 +35,7 @@ import me.fabiansuarez.compose.lab.netflixbasicnavigation.ui.theme.*
 )
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RegisterScreen() {
+fun RegisterScreen(navController: NavController = rememberNavController()) {
     val scrollState = rememberScrollState()
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -202,7 +204,9 @@ fun RegisterScreen() {
 
                 // ── Continue button ──────────────────────────────────────────
                 Button(
-                    onClick = { },
+                    onClick = {
+                        navController.navigate("register_step_2")
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(52.dp),

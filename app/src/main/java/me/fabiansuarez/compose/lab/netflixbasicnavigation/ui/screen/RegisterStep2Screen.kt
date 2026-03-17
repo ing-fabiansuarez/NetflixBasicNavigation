@@ -23,6 +23,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import me.fabiansuarez.compose.lab.netflixbasicnavigation.data.models.NetflixPlan
 import me.fabiansuarez.compose.lab.netflixbasicnavigation.data.netflixPlans
 import me.fabiansuarez.compose.lab.netflixbasicnavigation.ui.theme.*
@@ -33,7 +35,7 @@ import me.fabiansuarez.compose.lab.netflixbasicnavigation.ui.theme.*
     showSystemUi = true
 )
 @Composable
-fun RegisterStep2Screen() {
+fun RegisterStep2Screen(navController: NavController = rememberNavController()) {
     val scrollState = rememberScrollState()
     var selectedPlan by remember { mutableStateOf(3) } // Premium selected by default
 
@@ -108,7 +110,9 @@ fun RegisterStep2Screen() {
 
                 // ── Continue button ──────────────────────────────────────────
                 Button(
-                    onClick = { },
+                    onClick = {
+                        navController.navigate("register_step_3")
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(52.dp),

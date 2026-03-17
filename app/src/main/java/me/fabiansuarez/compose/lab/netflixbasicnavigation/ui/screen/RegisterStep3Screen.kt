@@ -22,9 +22,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import me.fabiansuarez.compose.lab.netflixbasicnavigation.data.models.PaymentMethod
 import me.fabiansuarez.compose.lab.netflixbasicnavigation.ui.theme.*
-
 
 
 // ─── RegisterStep3Screen - Configurar pago ────────────────────────────────────
@@ -33,7 +34,9 @@ import me.fabiansuarez.compose.lab.netflixbasicnavigation.ui.theme.*
     showBackground = true,
 )
 @Composable
-fun RegisterStep3Screen() {
+fun RegisterStep3Screen(
+    navController: NavController = rememberNavController()
+) {
     val scrollState = rememberScrollState()
     var selectedPayment by remember { mutableStateOf(PaymentMethod.CARD) }
 
@@ -157,7 +160,9 @@ fun RegisterStep3Screen() {
 
                 // ── Start membership button ──────────────────────────────────
                 Button(
-                    onClick = {},
+                    onClick = {
+                        navController.navigate("home")
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(54.dp),
@@ -322,8 +327,6 @@ fun CreditCardForm(
     )
 
     Spacer(modifier = Modifier.height(20.dp))
-
-
 
 
 }

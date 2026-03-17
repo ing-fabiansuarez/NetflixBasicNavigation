@@ -27,6 +27,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import me.fabiansuarez.compose.lab.netflixbasicnavigation.ui.theme.*
 
 
@@ -37,7 +39,7 @@ import me.fabiansuarez.compose.lab.netflixbasicnavigation.ui.theme.*
     showSystemUi = true
 )
 @Composable
-fun LoginScreen() {
+fun LoginScreen(navController: NavController = rememberNavController()) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
@@ -245,7 +247,9 @@ fun LoginScreen() {
                         color = NetflixWhite,
                         fontSize = 15.sp,
                         fontWeight = FontWeight.Medium,
-                        modifier = Modifier.clickable { }
+                        modifier = Modifier.clickable {
+                            navController.navigate("register_step_1")
+                        }
                     )
                 }
             }
