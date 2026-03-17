@@ -66,7 +66,9 @@ fun RegisterScreen(navController: NavController = rememberNavController()) {
             ) {
                 // Back arrow
                 IconButton(
-                    onClick = {},
+                    onClick = {
+                        navController.popBackStack()
+                    },
                     modifier = Modifier.align(Alignment.CenterStart)
                 ) {
                     Icon(

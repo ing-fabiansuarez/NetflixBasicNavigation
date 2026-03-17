@@ -52,7 +52,9 @@ fun RegisterStep2Screen(navController: NavController = rememberNavController()) 
 
             // ── Top Bar ──────────────────────────────────────────────────────
             RegisterTopBar(
-                onBackClick = {},
+                onBackClick = {
+                    navController.popBackStack()
+                },
                 step = 2,
                 totalSteps = 3
             )

@@ -60,7 +60,9 @@ fun RegisterStep3Screen(
 
             // ── Top Bar ──────────────────────────────────────────────────────
             RegisterTopBar(
-                onBackClick = { },
+                onBackClick = {
+                    navController.popBackStack()
+                },
                 step = 3,
                 totalSteps = 3
             )
@@ -161,7 +163,9 @@ fun RegisterStep3Screen(
                 // ── Start membership button ──────────────────────────────────
                 Button(
                     onClick = {
-                        navController.navigate("home")
+                        navController.navigate("home"){
+                            popUpTo("login") { inclusive = true }
+                        }
                     },
                     modifier = Modifier
                         .fillMaxWidth()
