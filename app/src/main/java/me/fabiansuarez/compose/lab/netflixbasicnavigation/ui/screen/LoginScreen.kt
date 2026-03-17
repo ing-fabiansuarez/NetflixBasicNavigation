@@ -40,7 +40,7 @@ import me.fabiansuarez.compose.lab.netflixbasicnavigation.ui.theme.*
     showSystemUi = true
 )
 @Composable
-fun LoginScreen(navController: NavController = rememberNavController()) {
+fun LoginScreen(onSuscribeClick: () -> Unit = {}) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
@@ -249,7 +249,7 @@ fun LoginScreen(navController: NavController = rememberNavController()) {
                         fontSize = 15.sp,
                         fontWeight = FontWeight.Medium,
                         modifier = Modifier.clickable {
-                            navController.navigate(NetflixRoutes.REGISTER_STEP1)
+                            onSuscribeClick()
                         }
                     )
                 }

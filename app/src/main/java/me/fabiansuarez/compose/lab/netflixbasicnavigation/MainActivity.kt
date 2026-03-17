@@ -31,22 +31,39 @@ class MainActivity : ComponentActivity() {
             NavHost(navController = navController, startDestination = NetflixRoutes.LOGIN) {
                 composable(NetflixRoutes.LOGIN) {
                     LoginScreen(
-                        navController = navController
+                        onSuscribeClick = {
+                            navController.navigate(NetflixRoutes.REGISTER_STEP1)
+                        }
                     )
                 }
                 composable(NetflixRoutes.REGISTER_STEP1) {
                     RegisterScreen(
-                        navController = navController
+                        onBackClick = {
+                            navController.popBackStack()
+                        },
+                        onRegisterStep2 = {
+                            navController.navigate(NetflixRoutes.REGISTER_STEP2)
+                        }
                     )
                 }
                 composable(NetflixRoutes.REGISTER_STEP2) {
                     RegisterStep2Screen(
-                        navController = navController
+                        onBackClick = {
+                            navController.popBackStack()
+                        },
+                        onNextClick = {
+                            navController.navigate(NetflixRoutes.REGISTER_STEP3)
+                        }
                     )
                 }
                 composable(NetflixRoutes.REGISTER_STEP3) {
                     RegisterStep3Screen(
-                        navController = navController
+                        onBackClick = {
+                            navController.popBackStack()
+                        },
+                        onNextClick = {
+                            navController.navigate(NetflixRoutes.HOME)
+                        }
                     )
                 }
                 composable(NetflixRoutes.HOME) {

@@ -36,7 +36,7 @@ import me.fabiansuarez.compose.lab.netflixbasicnavigation.ui.theme.*
 )
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RegisterScreen(navController: NavController = rememberNavController()) {
+fun RegisterScreen(onBackClick: () -> Unit = {}, onRegisterStep2: () -> Unit = {}) {
     val scrollState = rememberScrollState()
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -67,9 +67,7 @@ fun RegisterScreen(navController: NavController = rememberNavController()) {
             ) {
                 // Back arrow
                 IconButton(
-                    onClick = {
-                        navController.popBackStack()
-                    },
+                    onClick = onBackClick,
                     modifier = Modifier.align(Alignment.CenterStart)
                 ) {
                     Icon(
@@ -207,9 +205,7 @@ fun RegisterScreen(navController: NavController = rememberNavController()) {
 
                 // ── Continue button ──────────────────────────────────────────
                 Button(
-                    onClick = {
-                        navController.navigate(NetflixRoutes.REGISTER_STEP2)
-                    },
+                    onClick = onRegisterStep2,
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(52.dp),

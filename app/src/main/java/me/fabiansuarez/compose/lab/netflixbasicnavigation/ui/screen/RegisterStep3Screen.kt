@@ -36,7 +36,8 @@ import me.fabiansuarez.compose.lab.netflixbasicnavigation.ui.theme.*
 )
 @Composable
 fun RegisterStep3Screen(
-    navController: NavController = rememberNavController()
+    onNextClick: () -> Unit = {},
+    onBackClick: () -> Unit = {}
 ) {
     val scrollState = rememberScrollState()
     var selectedPayment by remember { mutableStateOf(PaymentMethod.CARD) }
@@ -61,9 +62,7 @@ fun RegisterStep3Screen(
 
             // ── Top Bar ──────────────────────────────────────────────────────
             RegisterTopBar(
-                onBackClick = {
-                    navController.popBackStack()
-                },
+                onBackClick = onBackClick,
                 step = 3,
                 totalSteps = 3
             )
@@ -163,11 +162,7 @@ fun RegisterStep3Screen(
 
                 // ── Start membership button ──────────────────────────────────
                 Button(
-                    onClick = {
-                        navController.navigate(NetflixRoutes.HOME){
-                            popUpTo(NetflixRoutes.HOME) { inclusive = true }
-                        }
-                    },
+                    onClick = onNextClick,
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(54.dp),
