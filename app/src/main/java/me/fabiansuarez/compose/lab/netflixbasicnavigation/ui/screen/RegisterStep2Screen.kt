@@ -27,6 +27,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import me.fabiansuarez.compose.lab.netflixbasicnavigation.data.models.NetflixPlan
 import me.fabiansuarez.compose.lab.netflixbasicnavigation.data.netflixPlans
+import me.fabiansuarez.compose.lab.netflixbasicnavigation.ui.navigation.NetflixRoutes
 import me.fabiansuarez.compose.lab.netflixbasicnavigation.ui.theme.*
 
 @Preview(
@@ -113,7 +114,7 @@ fun RegisterStep2Screen(navController: NavController = rememberNavController()) 
                 // ── Continue button ──────────────────────────────────────────
                 Button(
                     onClick = {
-                        navController.navigate("register_step_3")
+                        navController.navigate(NetflixRoutes.REGISTER_STEP3)
                     },
                     modifier = Modifier
                         .fillMaxWidth()

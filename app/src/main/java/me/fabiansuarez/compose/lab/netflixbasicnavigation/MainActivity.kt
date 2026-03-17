@@ -14,6 +14,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import me.fabiansuarez.compose.lab.netflixbasicnavigation.ui.navigation.NetflixRoutes
 import me.fabiansuarez.compose.lab.netflixbasicnavigation.ui.screen.HomeScreen
 import me.fabiansuarez.compose.lab.netflixbasicnavigation.ui.screen.LoginScreen
 import me.fabiansuarez.compose.lab.netflixbasicnavigation.ui.screen.RegisterScreen
@@ -27,28 +28,28 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             val navController = rememberNavController()
-            NavHost(navController = navController, startDestination = "login") {
-                composable("login") {
+            NavHost(navController = navController, startDestination = NetflixRoutes.LOGIN) {
+                composable(NetflixRoutes.LOGIN) {
                     LoginScreen(
                         navController = navController
                     )
                 }
-                composable("register_step_1") {
+                composable(NetflixRoutes.REGISTER_STEP1) {
                     RegisterScreen(
                         navController = navController
                     )
                 }
-                composable("register_step_2") {
+                composable(NetflixRoutes.REGISTER_STEP2) {
                     RegisterStep2Screen(
                         navController = navController
                     )
                 }
-                composable("register_step_3") {
+                composable(NetflixRoutes.REGISTER_STEP3) {
                     RegisterStep3Screen(
                         navController = navController
                     )
                 }
-                composable("home") {
+                composable(NetflixRoutes.HOME) {
                     HomeScreen()
                 }
             }

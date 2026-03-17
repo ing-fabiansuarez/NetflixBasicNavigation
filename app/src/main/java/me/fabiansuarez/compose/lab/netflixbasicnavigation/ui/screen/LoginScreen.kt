@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import me.fabiansuarez.compose.lab.netflixbasicnavigation.ui.navigation.NetflixRoutes
 import me.fabiansuarez.compose.lab.netflixbasicnavigation.ui.theme.*
 
 
@@ -248,7 +249,7 @@ fun LoginScreen(navController: NavController = rememberNavController()) {
                         fontSize = 15.sp,
                         fontWeight = FontWeight.Medium,
                         modifier = Modifier.clickable {
-                            navController.navigate("register_step_1")
+                            navController.navigate(NetflixRoutes.REGISTER_STEP1)
                         }
                     )
                 }

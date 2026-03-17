@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import me.fabiansuarez.compose.lab.netflixbasicnavigation.ui.navigation.NetflixRoutes
 import me.fabiansuarez.compose.lab.netflixbasicnavigation.ui.theme.*
 
 // ─── RegisterScreen ───────────────────────────────────────────────────────────
@@ -207,7 +208,7 @@ fun RegisterScreen(navController: NavController = rememberNavController()) {
                 // ── Continue button ──────────────────────────────────────────
                 Button(
                     onClick = {
-                        navController.navigate("register_step_2")
+                        navController.navigate(NetflixRoutes.REGISTER_STEP2)
                     },
                     modifier = Modifier
                         .fillMaxWidth()

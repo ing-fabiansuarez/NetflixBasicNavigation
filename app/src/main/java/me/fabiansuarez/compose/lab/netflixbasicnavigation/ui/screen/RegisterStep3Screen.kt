@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import me.fabiansuarez.compose.lab.netflixbasicnavigation.data.models.PaymentMethod
+import me.fabiansuarez.compose.lab.netflixbasicnavigation.ui.navigation.NetflixRoutes
 import me.fabiansuarez.compose.lab.netflixbasicnavigation.ui.theme.*
 
 
@@ -163,8 +164,8 @@ fun RegisterStep3Screen(
                 // ── Start membership button ──────────────────────────────────
                 Button(
                     onClick = {
-                        navController.navigate("home"){
-                            popUpTo("login") { inclusive = true }
+                        navController.navigate(NetflixRoutes.HOME){
+                            popUpTo(NetflixRoutes.HOME) { inclusive = true }
                         }
                     },
                     modifier = Modifier
