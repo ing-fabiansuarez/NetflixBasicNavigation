@@ -4,13 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -21,6 +15,7 @@ import me.fabiansuarez.compose.lab.netflixbasicnavigation.ui.screen.RegisterScre
 import me.fabiansuarez.compose.lab.netflixbasicnavigation.ui.screen.RegisterStep2Screen
 import me.fabiansuarez.compose.lab.netflixbasicnavigation.ui.screen.RegisterStep3Screen
 import me.fabiansuarez.compose.lab.netflixbasicnavigation.ui.theme.NetflixBasicNavigationTheme
+import me.fabiansuarez.compose.lab.netflixbasicnavigation.ui.viewmodel.RegistrationViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,6 +24,10 @@ class MainActivity : ComponentActivity() {
         setContent {
             NetflixBasicNavigationTheme {
                 val navController = rememberNavController()
+                
+                // Shared ViewModel for the entire registration flow
+                val registrationViewModel: RegistrationViewModel = viewModel()
+                
                 NavHost(navController = navController, startDestination = NetflixRoutes.LOGIN) {
                     composable(NetflixRoutes.LOGIN) {
                         LoginScreen(
@@ -44,6 +43,7 @@ class MainActivity : ComponentActivity() {
                     }
                     composable(NetflixRoutes.REGISTER_STEP1) {
                         RegisterScreen(
+                            viewModel = registrationViewModel,
                             onBackClick = {
                                 navController.popBackStack()
                             },
@@ -59,6 +59,7 @@ class MainActivity : ComponentActivity() {
                     }
                     composable(NetflixRoutes.REGISTER_STEP2) {
                         RegisterStep2Screen(
+                            viewModel = registrationViewModel,
                             onBackClick = {
                                 navController.popBackStack()
                             },
@@ -69,6 +70,7 @@ class MainActivity : ComponentActivity() {
                     }
                     composable(NetflixRoutes.REGISTER_STEP3) {
                         RegisterStep3Screen(
+                            viewModel = registrationViewModel,
                             onBackClick = {
                                 navController.popBackStack()
                             },

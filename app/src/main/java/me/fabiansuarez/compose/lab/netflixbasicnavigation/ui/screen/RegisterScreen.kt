@@ -24,24 +24,56 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import me.fabiansuarez.compose.lab.netflixbasicnavigation.ui.theme.*
+import me.fabiansuarez.compose.lab.netflixbasicnavigation.ui.viewmodel.RegistrationViewModel
 
-// ─── RegisterScreen ───────────────────────────────────────────────────────────
-@OptIn(ExperimentalMaterial3Api::class)
+// ─── RegisterScreen (Stateful) ────────────────────────────────────────────────
 @Composable
 fun RegisterScreen(
+    viewModel: RegistrationViewModel,
+    onBackClick: () -> Unit,
+    onNextClick: () -> Unit,
+    onLoginClick: () -> Unit
+) {
+    RegisterContent(
+        email = viewModel.email,
+        password = viewModel.password,
+        confirmPassword = viewModel.confirmPassword,
+        passwordVisible = viewModel.passwordVisible,
+        confirmPasswordVisible = viewModel.confirmPasswordVisible,
+        promoEmails = viewModel.promoEmails,
+        onEmailChange = viewModel::onEmailChange,
+        onPasswordChange = viewModel::onPasswordChange,
+        onConfirmPasswordChange = viewModel::onConfirmPasswordChange,
+        onTogglePassword = viewModel::togglePasswordVisibility,
+        onToggleConfirmPassword = viewModel::toggleConfirmPasswordVisibility,
+        onPromoEmailsChange = viewModel::onPromoEmailsChange,
+        onBackClick = onBackClick,
+        onNextClick = onNextClick,
+        onLoginClick = onLoginClick
+    )
+}
+
+// ─── RegisterContent (Stateless) ──────────────────────────────────────────────
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun RegisterContent(
+    email: String,
+    password: String,
+    confirmPassword: String,
+    passwordVisible: Boolean,
+    confirmPasswordVisible: Boolean,
+    promoEmails: Boolean,
+    onEmailChange: (String) -> Unit,
+    onPasswordChange: (String) -> Unit,
+    onConfirmPasswordChange: (String) -> Unit,
+    onTogglePassword: () -> Unit,
+    onToggleConfirmPassword: () -> Unit,
+    onPromoEmailsChange: (Boolean) -> Unit,
     onBackClick: () -> Unit,
     onNextClick: () -> Unit,
     onLoginClick: () -> Unit
 ) {
     val scrollState = rememberScrollState()
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    var confirmPassword by remember { mutableStateOf("") }
-    var passwordVisible by remember { mutableStateOf(false) }
-    var confirmPasswordVisible by remember { mutableStateOf(false) }
-    var promoEmails by remember { mutableStateOf(false) }
-
-    // Step indicator state (Netflix has a multi-step signup)
     val currentStep = 1
 
     Box(
@@ -133,7 +165,7 @@ fun RegisterScreen(
                 // ── Email field ──────────────────────────────────────────────
                 NetflixTextField(
                     value = email,
-                    onValueChange = { email = it },
+                    onValueChange = onEmailChange,
                     label = "Correo electrónico",
                     keyboardType = KeyboardType.Email
                 )
@@ -143,12 +175,12 @@ fun RegisterScreen(
                 // ── Password field ───────────────────────────────────────────
                 NetflixTextField(
                     value = password,
-                    onValueChange = { password = it },
+                    onValueChange = onPasswordChange,
                     label = "Crea una contraseña",
                     keyboardType = KeyboardType.Password,
                     isPassword = true,
                     passwordVisible = passwordVisible,
-                    onPasswordToggle = { passwordVisible = !passwordVisible }
+                    onPasswordToggle = onTogglePassword
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -156,12 +188,12 @@ fun RegisterScreen(
                 // ── Confirm Password field ───────────────────────────────────
                 NetflixTextField(
                     value = confirmPassword,
-                    onValueChange = { confirmPassword = it },
+                    onValueChange = onConfirmPasswordChange,
                     label = "Confirma tu contraseña",
                     keyboardType = KeyboardType.Password,
                     isPassword = true,
                     passwordVisible = confirmPasswordVisible,
-                    onPasswordToggle = { confirmPasswordVisible = !confirmPasswordVisible }
+                    onPasswordToggle = onToggleConfirmPassword
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -175,12 +207,12 @@ fun RegisterScreen(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickable { promoEmails = !promoEmails },
+                        .clickable { onPromoEmailsChange(!promoEmails) },
                     verticalAlignment = Alignment.Top
                 ) {
                     Checkbox(
                         checked = promoEmails,
-                        onCheckedChange = { promoEmails = it },
+                        onCheckedChange = onPromoEmailsChange,
                         colors = CheckboxDefaults.colors(
                             checkedColor = NetflixWhite,
                             uncheckedColor = NetflixGray,
@@ -273,7 +305,19 @@ fun RegisterScreen(
 @Composable
 fun RegisterScreenPreview() {
     NetflixBasicNavigationTheme {
-        RegisterScreen(
+        RegisterContent(
+            email = "",
+            password = "",
+            confirmPassword = "",
+            passwordVisible = false,
+            confirmPasswordVisible = false,
+            promoEmails = false,
+            onEmailChange = {},
+            onPasswordChange = {},
+            onConfirmPasswordChange = {},
+            onTogglePassword = {},
+            onToggleConfirmPassword = {},
+            onPromoEmailsChange = {},
             onBackClick = {},
             onNextClick = {},
             onLoginClick = {}

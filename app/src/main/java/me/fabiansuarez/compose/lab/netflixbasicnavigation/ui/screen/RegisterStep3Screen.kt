@@ -24,23 +24,50 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import me.fabiansuarez.compose.lab.netflixbasicnavigation.data.models.PaymentMethod
 import me.fabiansuarez.compose.lab.netflixbasicnavigation.ui.theme.*
+import me.fabiansuarez.compose.lab.netflixbasicnavigation.ui.viewmodel.RegistrationViewModel
 
 
-// ─── RegisterStep3Screen - Configurar pago ────────────────────────────────────
+// ─── RegisterStep3Screen (Stateful) ──────────────────────────────────────────
 @Composable
 fun RegisterStep3Screen(
+    viewModel: RegistrationViewModel,
+    onBackClick: () -> Unit,
+    onNextClick: () -> Unit
+) {
+    RegisterStep3Content(
+        cardNumber = viewModel.cardNumber,
+        cardName = viewModel.cardName,
+        cardExpiry = viewModel.cardExpiry,
+        cardCvv = viewModel.cardCvv,
+        saveCard = viewModel.saveCard,
+        onCardNumberChange = viewModel::onCardNumberChange,
+        onCardNameChange = viewModel::onCardNameChange,
+        onCardExpiryChange = viewModel::onCardExpiryChange,
+        onCardCvvChange = viewModel::onCardCvvChange,
+        onSaveCardChange = viewModel::onSaveCardChange,
+        onBackClick = onBackClick,
+        onNextClick = onNextClick
+    )
+}
+
+// ─── RegisterStep3Content (Stateless) ────────────────────────────────────────
+@Composable
+fun RegisterStep3Content(
+    cardNumber: String,
+    cardName: String,
+    cardExpiry: String,
+    cardCvv: String,
+    saveCard: Boolean,
+    onCardNumberChange: (String) -> Unit,
+    onCardNameChange: (String) -> Unit,
+    onCardExpiryChange: (String) -> Unit,
+    onCardCvvChange: (String) -> Unit,
+    onSaveCardChange: (Boolean) -> Unit,
     onBackClick: () -> Unit,
     onNextClick: () -> Unit
 ) {
     val scrollState = rememberScrollState()
     var selectedPayment by remember { mutableStateOf(PaymentMethod.CARD) }
-
-    // Card fields
-    var cardNumber by remember { mutableStateOf("") }
-    var cardName by remember { mutableStateOf("") }
-    var cardExpiry by remember { mutableStateOf("") }
-    var cardCvv by remember { mutableStateOf("") }
-    var saveCard by remember { mutableStateOf(true) }
 
     Box(
         modifier = Modifier
@@ -132,15 +159,15 @@ fun RegisterStep3Screen(
                     PaymentMethod.CARD -> {
                         CreditCardForm(
                             cardNumber = cardNumber,
-                            onCardNumberChange = { cardNumber = it },
+                            onCardNumberChange = onCardNumberChange,
                             cardName = cardName,
-                            onCardNameChange = { cardName = it },
+                            onCardNameChange = onCardNameChange,
                             cardExpiry = cardExpiry,
-                            onCardExpiryChange = { cardExpiry = it },
+                            onCardExpiryChange = onCardExpiryChange,
                             cardCvv = cardCvv,
-                            onCardCvvChange = { cardCvv = it },
+                            onCardCvvChange = onCardCvvChange,
                             saveCard = saveCard,
-                            onSaveCardChange = { saveCard = it }
+                            onSaveCardChange = onSaveCardChange
                         )
                     }
 
@@ -209,7 +236,20 @@ fun RegisterStep3Screen(
 @Composable
 fun RegisterStep3ScreenPreview() {
     NetflixBasicNavigationTheme {
-        RegisterStep3Screen(onBackClick = {}, onNextClick = {})
+        RegisterStep3Content(
+            cardNumber = "",
+            cardName = "",
+            cardExpiry = "",
+            cardCvv = "",
+            saveCard = true,
+            onCardNumberChange = {},
+            onCardNameChange = {},
+            onCardExpiryChange = {},
+            onCardCvvChange = {},
+            onSaveCardChange = {},
+            onBackClick = {},
+            onNextClick = {}
+        )
     }
 }
 

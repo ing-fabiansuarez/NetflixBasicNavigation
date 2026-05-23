@@ -27,20 +27,46 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import me.fabiansuarez.compose.lab.netflixbasicnavigation.ui.viewmodel.LoginViewModel
 import me.fabiansuarez.compose.lab.netflixbasicnavigation.ui.theme.*
 
 
-// ─── LoginScreen ─────────────────────────────────────────────────────────────
+// ─── LoginScreen (Stateful) ──────────────────────────────────────────────────
 @Composable
 fun LoginScreen(
     onLoginClick: () -> Unit,
+    onRegisterClick: () -> Unit,
+    viewModel: LoginViewModel = viewModel()
+) {
+    LoginContent(
+        email = viewModel.email,
+        password = viewModel.password,
+        passwordVisible = viewModel.passwordVisible,
+        rememberMe = viewModel.rememberMe,
+        onEmailChange = viewModel::onEmailChange,
+        onPasswordChange = viewModel::onPasswordChange,
+        onTogglePassword = viewModel::togglePasswordVisibility,
+        onRememberMeChange = viewModel::onRememberMeChange,
+        onLoginClick = onLoginClick,
+        onRegisterClick = onRegisterClick
+    )
+}
+
+// ─── LoginContent (Stateless) ────────────────────────────────────────────────
+@Composable
+fun LoginContent(
+    email: String,
+    password: String,
+    passwordVisible: Boolean,
+    rememberMe: Boolean,
+    onEmailChange: (String) -> Unit,
+    onPasswordChange: (String) -> Unit,
+    onTogglePassword: () -> Unit,
+    onRememberMeChange: (Boolean) -> Unit,
+    onLoginClick: () -> Unit,
     onRegisterClick: () -> Unit
 ) {
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    var passwordVisible by remember { mutableStateOf(false) }
-    var rememberMe by remember { mutableStateOf(false) }
-
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -105,7 +131,7 @@ fun LoginScreen(
                 // ── Email field ──────────────────────────────────────────────
                 NetflixTextField(
                     value = email,
-                    onValueChange = { email = it },
+                    onValueChange = onEmailChange,
                     label = "Correo electrónico o número de teléfono",
                     keyboardType = KeyboardType.Email
                 )
@@ -115,12 +141,12 @@ fun LoginScreen(
                 // ── Password field ───────────────────────────────────────────
                 NetflixTextField(
                     value = password,
-                    onValueChange = { password = it },
+                    onValueChange = onPasswordChange,
                     label = "Contraseña",
                     keyboardType = KeyboardType.Password,
                     isPassword = true,
                     passwordVisible = passwordVisible,
-                    onPasswordToggle = { passwordVisible = !passwordVisible }
+                    onPasswordToggle = onTogglePassword
                 )
 
                 Spacer(modifier = Modifier.height(24.dp))
@@ -210,7 +236,7 @@ fun LoginScreen(
                 ) {
                     Checkbox(
                         checked = rememberMe,
-                        onCheckedChange = { rememberMe = it },
+                        onCheckedChange = onRememberMeChange,
                         colors = CheckboxDefaults.colors(
                             checkedColor = NetflixWhite,
                             uncheckedColor = NetflixGray,
@@ -288,7 +314,18 @@ fun LoginScreen(
 @Composable
 fun LoginScreenPreview() {
     NetflixBasicNavigationTheme {
-        LoginScreen(onLoginClick = {}, onRegisterClick = {})
+        LoginContent(
+            email = "",
+            password = "",
+            passwordVisible = false,
+            rememberMe = false,
+            onEmailChange = {},
+            onPasswordChange = {},
+            onTogglePassword = {},
+            onRememberMeChange = {},
+            onLoginClick = {},
+            onRegisterClick = {}
+        )
     }
 }
 

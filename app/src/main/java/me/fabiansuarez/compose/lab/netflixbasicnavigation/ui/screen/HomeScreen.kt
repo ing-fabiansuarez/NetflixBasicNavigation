@@ -1,22 +1,20 @@
 package me.fabiansuarez.compose.lab.netflixbasicnavigation.ui.screen
 
-import me.fabiansuarez.compose.lab.netflixbasicnavigation.ui.theme.NetflixDark
-
-
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
-import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -24,28 +22,38 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
+import androidx.lifecycle.viewmodel.compose.viewModel
 import me.fabiansuarez.compose.lab.netflixbasicnavigation.data.models.NetflixCategory
 import me.fabiansuarez.compose.lab.netflixbasicnavigation.data.models.NetflixMovie
 import me.fabiansuarez.compose.lab.netflixbasicnavigation.data.sampleCategories
 import me.fabiansuarez.compose.lab.netflixbasicnavigation.ui.theme.*
+import me.fabiansuarez.compose.lab.netflixbasicnavigation.ui.viewmodel.HomeViewModel
 
-
-// ─── HomeScreen ───────────────────────────────────────────────────────────────
-@Preview(
-    name = "Netflix Home Screen",
-    showBackground = true,
-    showSystemUi = true
-)
+// ─── HomeScreen (Stateful) ──────────────────────────────────────────────────
 @Composable
-fun HomeScreen() {
-    var selectedTab by remember { mutableStateOf(0) }
+fun HomeScreen(viewModel: HomeViewModel = viewModel()) {
+    HomeContent(
+        selectedTab = viewModel.selectedTab,
+        categories = viewModel.categories,
+        onTabSelected = viewModel::onTabSelected
+    )
+}
 
+// ─── HomeContent (Stateless) ────────────────────────────────────────────────
+@Composable
+fun HomeContent(
+    selectedTab: Int,
+    categories: List<NetflixCategory>,
+    onTabSelected: (Int) -> Unit
+) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -61,7 +69,7 @@ fun HomeScreen() {
             }
 
             // ── Category rows ────────────────────────────────────────────────
-            items(sampleCategories) { category ->
+            items(categories) { category ->
                 NetflixCategoryRow(category = category)
                 Spacer(modifier = Modifier.height(8.dp))
             }
@@ -75,7 +83,7 @@ fun HomeScreen() {
             onProfileClick = { },
             onSearchClick = { },
             selectedTab = selectedTab,
-            onTabSelected = { selectedTab = it }
+            onTabSelected = onTabSelected
         )
 
         // ── Bottom navigation bar ────────────────────────────────────────────
@@ -86,7 +94,23 @@ fun HomeScreen() {
     }
 }
 
-// ─── Top Bar ──────────────────────────────────────────────────────────────────
+@Preview(
+    name = "Netflix Home Screen",
+    showBackground = true,
+    showSystemUi = true
+)
+@Composable
+fun HomeScreenPreview() {
+    NetflixBasicNavigationTheme {
+        HomeContent(
+            selectedTab = 0,
+            categories = sampleCategories,
+            onTabSelected = {}
+        )
+    }
+}
+
+// ─── TopBar ──────────────────────────────────────────────────────────────────
 @Composable
 fun NetflixTopBar(
     onProfileClick: () -> Unit,
@@ -94,93 +118,75 @@ fun NetflixTopBar(
     selectedTab: Int,
     onTabSelected: (Int) -> Unit
 ) {
+    val tabs = listOf("Series", "Películas", "Mi lista")
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .background(
                 Brush.verticalGradient(
                     colors = listOf(
-                        Color(0xDD000000),
-                        Color(0x88000000),
+                        Color.Black.copy(alpha = 0.8f),
+                        Color.Black.copy(alpha = 0.4f),
                         Color.Transparent
                     )
                 )
             )
+            .padding(top = 40.dp, bottom = 12.dp)
+            .zIndex(1f)
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .statusBarsPadding()
-                .padding(horizontal = 12.dp, vertical = 8.dp),
-            verticalAlignment = Alignment.CenterVertically
+                .padding(horizontal = 16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            // Netflix logo
             Text(
-                text = "NETFLIX",
-                fontSize = 22.sp,
-                fontWeight = FontWeight.Black,
+                text = "N",
                 color = NetflixRed,
-                letterSpacing = 1.5.sp,
-                modifier = Modifier.weight(1f)
+                fontSize = 34.sp,
+                fontWeight = FontWeight.Black
             )
 
-            // Search icon
-            IconButton(onClick = onSearchClick) {
-                Icon(
-                    imageVector = Icons.Outlined.Search,
-                    contentDescription = "Buscar",
-                    tint = NetflixWhite,
-                    modifier = Modifier.size(24.dp)
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                IconButton(onClick = onSearchClick) {
+                    Icon(
+                        imageVector = Icons.Default.Search,
+                        contentDescription = "Search",
+                        tint = NetflixWhite,
+                        modifier = Modifier.size(28.dp)
+                    )
+                }
+
+                Spacer(modifier = Modifier.width(8.dp))
+
+                Box(
+                    modifier = Modifier
+                        .size(30.dp)
+                        .clip(RoundedCornerShape(4.dp))
+                        .background(Color.Blue)
+                        .clickable { onProfileClick() }
                 )
-            }
-
-            Spacer(modifier = Modifier.width(4.dp))
-
-            // Profile avatar
-            Box(
-                modifier = Modifier
-                    .size(32.dp)
-                    .clip(RoundedCornerShape(4.dp))
-                    .background(Color(0xFF46D369))
-                    .clickable { onProfileClick() },
-                contentAlignment = Alignment.Center
-            ) {
-                Text("😎", fontSize = 18.sp)
             }
         }
 
-        // ── Tabs row ─────────────────────────────────────────────────────────
-        val tabs = listOf("Inicio", "Series", "Películas", "Categorías")
+        Spacer(modifier = Modifier.height(16.dp))
+
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .horizontalScroll(rememberScrollState())
-                .padding(horizontal = 12.dp, vertical = 4.dp),
-            horizontalArrangement = Arrangement.spacedBy(20.dp)
+                .padding(horizontal = 24.dp),
+            horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-            tabs.forEachIndexed { index, tab ->
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier
-                        .clickable { onTabSelected(index) }
-                        .padding(bottom = 6.dp)
-                ) {
-                    Text(
-                        text = tab,
-                        color = if (selectedTab == index) NetflixWhite else NetflixHint,
-                        fontSize = 14.sp,
-                        fontWeight = if (selectedTab == index) FontWeight.Bold else FontWeight.Normal
-                    )
-                    if (selectedTab == index) {
-                        Spacer(modifier = Modifier.height(3.dp))
-                        Box(
-                            modifier = Modifier
-                                .width(20.dp)
-                                .height(2.dp)
-                                .background(NetflixRed, RoundedCornerShape(1.dp))
-                        )
-                    }
-                }
+            tabs.forEachIndexed { index, title ->
+                Text(
+                    text = title,
+                    color = if (selectedTab == index) NetflixWhite else NetflixGray,
+                    fontSize = 15.sp,
+                    fontWeight = if (selectedTab == index) FontWeight.Bold else FontWeight.Medium,
+                    modifier = Modifier.clickable { onTabSelected(index) }
+                )
             }
         }
     }
@@ -192,206 +198,130 @@ fun NetflixHeroBanner() {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(520.dp)
+            .height(550.dp)
     ) {
-        // Background simulated poster
+        // Main Image (Placeholder)
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .background(
                     Brush.verticalGradient(
-                        colors = listOf(
-                            Color(0xFF0A1628),
-                            Color(0xFF1A2A4A),
-                            Color(0xFF0A1628)
-                        )
+                        0.5f to Color(0xFF0A1628).copy(alpha = 0.5f),
+                        1f to NetflixDark
                     )
                 )
-        )
-
-        // Simulated movie still effect
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(
-                    Brush.radialGradient(
-                        colors = listOf(
-                            Color(0x332060CC),
-                            Color(0x00000000)
-                        ),
-                        radius = 600f
-                    )
-                )
-        )
-
-        // Bottom gradient for text readability
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(300.dp)
-                .align(Alignment.BottomCenter)
-                .background(
-                    Brush.verticalGradient(
-                        colors = listOf(
-                            Color.Transparent,
-                            Color(0xCC141414),
-                            Color(0xFF141414)
-                        )
-                    )
-                )
-        )
-
-        // Content
-        Column(
-            modifier = Modifier
-                .align(Alignment.BottomStart)
-                .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
         ) {
-            // TOP 10 badge
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(bottom = 8.dp)
+            // Visual element mimicking a movie poster
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(40.dp),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Box(
-                    modifier = Modifier
-                        .background(NetflixRed, RoundedCornerShape(2.dp))
-                        .padding(horizontal = 6.dp, vertical = 2.dp)
-                ) {
-                    Text(
-                        text = "TOP 10",
-                        color = NetflixWhite,
-                        fontSize = 11.sp,
-                        fontWeight = FontWeight.Black
-                    )
-                }
-                Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = "Serie del momento",
-                    color = NetflixHint,
-                    fontSize = 13.sp
+                    text = "EL PROBLEMA\nDE LOS 3",
+                    fontSize = 42.sp,
+                    fontWeight = FontWeight.Black,
+                    color = Color.White,
+                    textAlign = TextAlign.Center,
+                    lineHeight = 44.sp
                 )
-            }
-
-            // Title
-            Text(
-                text = "El problema\nde los 3 cuerpos",
-                fontSize = 32.sp,
-                fontWeight = FontWeight.Black,
-                color = NetflixWhite,
-                lineHeight = 36.sp
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // Tags
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                listOf("Acción", "Ciencia ficción", "Misterio").forEach { tag ->
-                    Text(
-                        text = tag,
-                        color = NetflixHint,
-                        fontSize = 13.sp
-                    )
-                    if (tag != "Misterio") {
-                        Text("·", color = NetflixHint, fontSize = 13.sp)
-                    }
-                }
-            }
-
-            Spacer(modifier = Modifier.height(14.dp))
-
-            // CTA buttons
-            Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                // Play button
-                Button(
-                    onClick = {},
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(42.dp),
-                    shape = RoundedCornerShape(4.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = NetflixWhite,
-                        contentColor = NetflixBlack
-                    ),
-                    contentPadding = PaddingValues(horizontal = 12.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.PlayArrow,
-                        contentDescription = null,
-                        modifier = Modifier.size(22.dp)
-                    )
-                    Spacer(modifier = Modifier.width(6.dp))
-                    Text(
-                        text = "Reproducir",
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 15.sp
-                    )
-                }
-
-                // My list button
-                OutlinedButton(
-                    onClick = {},
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(42.dp),
-                    shape = RoundedCornerShape(4.dp),
-                    colors = ButtonDefaults.outlinedButtonColors(
-                        containerColor = Color(0x66333333),
-                        contentColor = NetflixWhite
-                    ),
-                    border = androidx.compose.foundation.BorderStroke(
-                        1.dp, Color(0x66FFFFFF)
-                    ),
-                    contentPadding = PaddingValues(horizontal = 12.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Add,
-                        contentDescription = null,
-                        modifier = Modifier.size(20.dp)
-                    )
-                    Spacer(modifier = Modifier.width(6.dp))
-                    Text(
-                        text = "Mi lista",
-                        fontWeight = FontWeight.Medium,
-                        fontSize = 15.sp
-                    )
-                }
+                Text(
+                    text = "CUERPOS",
+                    fontSize = 50.sp,
+                    fontWeight = FontWeight.Black,
+                    color = Color.White,
+                    textAlign = TextAlign.Center,
+                    letterSpacing = 4.sp
+                )
             }
         }
 
-        // Info button top-right
-        IconButton(
-            onClick = {},
+        // Content on top of banner
+        Column(
             modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(end = 12.dp, bottom = 16.dp)
-                .size(36.dp)
-                .border(1.dp, NetflixWhite, CircleShape)
+                .fillMaxWidth()
+                .align(Alignment.BottomCenter)
+                .padding(bottom = 24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Icon(
-                imageVector = Icons.Default.Info,
-                contentDescription = "Más info",
-                tint = NetflixWhite,
-                modifier = Modifier.size(18.dp)
-            )
+            // Genre labels
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Text("Ciencia ficción", color = NetflixWhite, fontSize = 13.sp)
+                Text(" • ", color = NetflixRed, fontWeight = FontWeight.Bold)
+                Text("Cerebral", color = NetflixWhite, fontSize = 13.sp)
+                Text(" • ", color = NetflixRed, fontWeight = FontWeight.Bold)
+                Text("Drama TV", color = NetflixWhite, fontSize = 13.sp)
+            }
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            // Action buttons
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 20.dp),
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                // My List
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.clickable { }
+                ) {
+                    Icon(Icons.Default.Add, "My List", tint = NetflixWhite)
+                    Text("Mi lista", color = NetflixWhite, fontSize = 12.sp)
+                }
+
+                // Play Button
+                Button(
+                    onClick = { },
+                    shape = RoundedCornerShape(4.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = NetflixWhite),
+                    modifier = Modifier
+                        .height(40.dp)
+                        .width(110.dp),
+                    contentPadding = PaddingValues(0.dp)
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(Icons.Default.PlayArrow, null, tint = Color.Black)
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text("Reproducir", color = Color.Black, fontWeight = FontWeight.Bold)
+                    }
+                }
+
+                // Info
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.clickable { }
+                ) {
+                    Icon(Icons.Default.Info, "Info", tint = NetflixWhite)
+                    Text("Información", color = NetflixWhite, fontSize = 12.sp)
+                }
+            }
         }
     }
 }
 
-// ─── Category Row ─────────────────────────────────────────────────────────────
+// ─── Category Row ────────────────────────────────────────────────────────────
 @Composable
 fun NetflixCategoryRow(category: NetflixCategory) {
     Column(modifier = Modifier.fillMaxWidth()) {
         Text(
             text = category.title,
             color = NetflixWhite,
-            fontSize = 16.sp,
+            fontSize = 19.sp,
             fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(start = 12.dp, bottom = 10.dp)
+            modifier = Modifier.padding(start = 16.dp, bottom = 8.dp)
         )
 
         LazyRow(
-            contentPadding = PaddingValues(horizontal = 12.dp),
-            horizontalArrangement = Arrangement.spacedBy(6.dp)
+            contentPadding = PaddingValues(horizontal = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             items(category.movies) { movie ->
                 NetflixMovieCard(movie = movie)
@@ -400,124 +330,109 @@ fun NetflixCategoryRow(category: NetflixCategory) {
     }
 }
 
-// ─── Movie Card ───────────────────────────────────────────────────────────────
+// ─── Movie Card ──────────────────────────────────────────────────────────────
 @Composable
 fun NetflixMovieCard(movie: NetflixMovie) {
     Box(
         modifier = Modifier
-            .width(110.dp)
-            .height(160.dp)
+            .width(115.dp)
+            .height(165.dp)
+            .clip(RoundedCornerShape(4.dp))
+            .background(movie.cardColor)
+            .clickable { }
     ) {
-        // Poster background
-        Box(
+        // Simulated Movie content
+        Column(
             modifier = Modifier
                 .fillMaxSize()
-                .clip(RoundedCornerShape(4.dp))
-                .background(
-                    Brush.linearGradient(
-                        colors = listOf(movie.cardColor, movie.cardColor.copy(alpha = 0.7f))
-                    )
-                )
+                .padding(8.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Simulated poster grid lines for texture
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(
-                        Brush.verticalGradient(
-                            colors = listOf(
-                                Color.Transparent,
-                                Color(0x44000000)
-                            )
-                        )
-                    )
-            )
-
-            // Title on card
             Text(
                 text = movie.title,
-                color = NetflixWhite.copy(alpha = 0.9f),
-                fontSize = 11.sp,
+                color = Color.White.copy(alpha = 0.7f),
+                fontSize = 12.sp,
                 fontWeight = FontWeight.Bold,
-                maxLines = 3,
-                overflow = TextOverflow.Ellipsis,
-                modifier = Modifier
-                    .align(Alignment.BottomStart)
-                    .padding(6.dp),
-                lineHeight = 14.sp
+                textAlign = TextAlign.Center
             )
         }
 
-        // NEW badge
+        // Top 10 badge
+        if (movie.isTop10) {
+            Box(
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(4.dp)
+                    .size(24.dp)
+                    .background(NetflixRed, RoundedCornerShape(2.dp)),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    "TOP\n10",
+                    color = Color.White,
+                    fontSize = 7.sp,
+                    fontWeight = FontWeight.Black,
+                    lineHeight = 8.sp,
+                    textAlign = TextAlign.Center
+                )
+            }
+        }
+
+        // New release tag
         if (movie.isNew) {
             Box(
                 modifier = Modifier
-                    .align(Alignment.TopStart)
-                    .padding(4.dp)
-                    .background(NetflixRed, RoundedCornerShape(2.dp))
-                    .padding(horizontal = 4.dp, vertical = 1.dp)
+                    .align(Alignment.BottomCenter)
+                    .fillMaxWidth()
+                    .background(NetflixRed)
+                    .padding(vertical = 2.dp),
+                contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = "NUEVO",
-                    color = NetflixWhite,
-                    fontSize = 9.sp,
-                    fontWeight = FontWeight.Black
+                    "NUEVO EPISODIO",
+                    color = Color.White,
+                    fontSize = 8.sp,
+                    fontWeight = FontWeight.Bold
                 )
             }
         }
 
-        // TOP 10 badge
-        if (movie.isTop10 && movie.top10Position != null) {
-            Row(
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .padding(4.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Box(
-                    modifier = Modifier
-                        .background(NetflixRed, RoundedCornerShape(2.dp))
-                        .padding(horizontal = 3.dp, vertical = 1.dp)
-                ) {
-                    Text(
-                        text = "#${movie.top10Position}",
-                        color = NetflixWhite,
-                        fontSize = 9.sp,
-                        fontWeight = FontWeight.Black
-                    )
-                }
-            }
-        }
+        // Netflix logo overlay (bottom left)
+        Text(
+            text = "N",
+            color = NetflixRed,
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Black,
+            modifier = Modifier
+                .align(Alignment.TopStart)
+                .padding(4.dp)
+        )
     }
 }
 
-// ─── Bottom Nav Bar ───────────────────────────────────────────────────────────
+// ─── Bottom Navigation ───────────────────────────────────────────────────────
 @Composable
-fun NetflixBottomBar(
-    selectedIndex: Int,
-    modifier: Modifier = Modifier
-) {
-    val items = listOf(
-        Pair("Inicio", Icons.Default.Home),
-        Pair("Buscar", Icons.Default.Search),
-        Pair("Próximamente", Icons.Default.PlayArrow),
-        Pair("Descargas", Icons.Default.KeyboardArrowDown),
-        Pair("Más", Icons.Default.Menu)
-    )
-
+fun NetflixBottomBar(selectedIndex: Int, modifier: Modifier = Modifier) {
     NavigationBar(
-        modifier = modifier,
-        containerColor = Color(0xF0141414),
-        contentColor = NetflixWhite,
-        tonalElevation = 0.dp
+        containerColor = Color.Black.copy(alpha = 0.95f),
+        tonalElevation = 0.dp,
+        modifier = modifier.height(65.dp)
     ) {
+        val items = listOf(
+            "Inicio" to painterResource(id = android.R.drawable.ic_menu_today),
+            "Juegos" to painterResource(id = android.R.drawable.ic_menu_view),
+            "Nuevo y popular" to painterResource(id = android.R.drawable.ic_menu_recent_history),
+            "Mi Netflix" to painterResource(id = android.R.drawable.ic_menu_myplaces)
+        )
+
         items.forEachIndexed { index, (label, icon) ->
             NavigationBarItem(
                 selected = index == selectedIndex,
-                onClick = {},
+                onClick = { },
                 icon = {
                     Icon(
-                        imageVector = icon,
+                        painter = icon,
                         contentDescription = label,
                         modifier = Modifier.size(24.dp)
                     )
@@ -525,15 +440,14 @@ fun NetflixBottomBar(
                 label = {
                     Text(
                         text = label,
-                        fontSize = 10.sp,
-                        maxLines = 1
+                        fontSize = 10.sp
                     )
                 },
                 colors = NavigationBarItemDefaults.colors(
                     selectedIconColor = NetflixWhite,
-                    unselectedIconColor = NetflixHint,
+                    unselectedIconColor = NetflixGray,
                     selectedTextColor = NetflixWhite,
-                    unselectedTextColor = NetflixHint,
+                    unselectedTextColor = NetflixGray,
                     indicatorColor = Color.Transparent
                 )
             )

@@ -26,14 +26,32 @@ import androidx.compose.ui.zIndex
 import me.fabiansuarez.compose.lab.netflixbasicnavigation.data.models.NetflixPlan
 import me.fabiansuarez.compose.lab.netflixbasicnavigation.data.netflixPlans
 import me.fabiansuarez.compose.lab.netflixbasicnavigation.ui.theme.*
+import me.fabiansuarez.compose.lab.netflixbasicnavigation.ui.viewmodel.RegistrationViewModel
 
+// ─── RegisterStep2Screen (Stateful) ──────────────────────────────────────────
 @Composable
 fun RegisterStep2Screen(
+    viewModel: RegistrationViewModel,
+    onBackClick: () -> Unit,
+    onNextClick: () -> Unit
+) {
+    RegisterStep2Content(
+        selectedPlanId = viewModel.selectedPlanId,
+        onPlanSelect = viewModel::onPlanSelect,
+        onBackClick = onBackClick,
+        onNextClick = onNextClick
+    )
+}
+
+// ─── RegisterStep2Content (Stateless) ────────────────────────────────────────
+@Composable
+fun RegisterStep2Content(
+    selectedPlanId: Int,
+    onPlanSelect: (Int) -> Unit,
     onBackClick: () -> Unit,
     onNextClick: () -> Unit
 ) {
     val scrollState = rememberScrollState()
-    var selectedPlan by remember { mutableStateOf(3) } // Premium selected by default
 
     Box(
         modifier = Modifier
@@ -94,8 +112,8 @@ fun RegisterStep2Screen(
                 netflixPlans.forEach { plan ->
                     PlanCard(
                         plan = plan,
-                        isSelected = selectedPlan == plan.id,
-                        onClick = { selectedPlan = plan.id }
+                        isSelected = selectedPlanId == plan.id,
+                        onClick = { onPlanSelect(plan.id) }
                     )
                     Spacer(modifier = Modifier.height(12.dp))
                 }
@@ -156,7 +174,12 @@ fun RegisterStep2Screen(
 @Composable
 fun RegisterStep2ScreenPreview() {
     NetflixBasicNavigationTheme {
-        RegisterStep2Screen(onBackClick = {}, onNextClick = {})
+        RegisterStep2Content(
+            selectedPlanId = 3,
+            onPlanSelect = {},
+            onBackClick = {},
+            onNextClick = {}
+        )
     }
 }
 
