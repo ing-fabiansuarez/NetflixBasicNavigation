@@ -27,20 +27,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import me.fabiansuarez.compose.lab.netflixbasicnavigation.ui.navigation.NetflixRoutes
 import me.fabiansuarez.compose.lab.netflixbasicnavigation.ui.theme.*
 
 
 // ─── LoginScreen ─────────────────────────────────────────────────────────────
-@Preview(
-    name = "Netflix Login Screen",
-    showBackground = true,
-    showSystemUi = true
-)
 @Composable
-fun LoginScreen(navController: NavController = rememberNavController()) {
+fun LoginScreen(
+    onLoginClick: () -> Unit,
+    onRegisterClick: () -> Unit
+) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
@@ -132,7 +127,7 @@ fun LoginScreen(navController: NavController = rememberNavController()) {
 
                 // ── Sign in button ───────────────────────────────────────────
                 Button(
-                    onClick = { },
+                    onClick = onLoginClick,
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(50.dp),
@@ -249,7 +244,7 @@ fun LoginScreen(navController: NavController = rememberNavController()) {
                         fontSize = 15.sp,
                         fontWeight = FontWeight.Medium,
                         modifier = Modifier.clickable {
-                            navController.navigate(NetflixRoutes.REGISTER_STEP1)
+                            onRegisterClick()
                         }
                     )
                 }
@@ -282,6 +277,18 @@ fun LoginScreen(navController: NavController = rememberNavController()) {
                 NetflixLanguageSelector()
             }
         }
+    }
+}
+
+@Preview(
+    name = "Netflix Login Screen",
+    showBackground = true,
+    showSystemUi = true
+)
+@Composable
+fun LoginScreenPreview() {
+    NetflixBasicNavigationTheme {
+        LoginScreen(onLoginClick = {}, onRegisterClick = {})
     }
 }
 
@@ -359,4 +366,3 @@ fun NetflixLanguageSelector() {
         Text("▾", color = NetflixHint, fontSize = 12.sp)
     }
 }
-

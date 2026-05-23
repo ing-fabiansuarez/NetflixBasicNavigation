@@ -22,21 +22,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import me.fabiansuarez.compose.lab.netflixbasicnavigation.data.models.PaymentMethod
-import me.fabiansuarez.compose.lab.netflixbasicnavigation.ui.navigation.NetflixRoutes
 import me.fabiansuarez.compose.lab.netflixbasicnavigation.ui.theme.*
 
 
 // ─── RegisterStep3Screen - Configurar pago ────────────────────────────────────
-@Preview(
-    name = "Register Step 3 - PSE",
-    showBackground = true,
-)
 @Composable
 fun RegisterStep3Screen(
-    navController: NavController = rememberNavController()
+    onBackClick: () -> Unit,
+    onNextClick: () -> Unit
 ) {
     val scrollState = rememberScrollState()
     var selectedPayment by remember { mutableStateOf(PaymentMethod.CARD) }
@@ -61,9 +55,7 @@ fun RegisterStep3Screen(
 
             // ── Top Bar ──────────────────────────────────────────────────────
             RegisterTopBar(
-                onBackClick = {
-                    navController.popBackStack()
-                },
+                onBackClick = onBackClick,
                 step = 3,
                 totalSteps = 3
             )
@@ -163,11 +155,7 @@ fun RegisterStep3Screen(
 
                 // ── Start membership button ──────────────────────────────────
                 Button(
-                    onClick = {
-                        navController.navigate(NetflixRoutes.HOME){
-                            popUpTo(NetflixRoutes.HOME) { inclusive = true }
-                        }
-                    },
+                    onClick = onNextClick,
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(54.dp),
@@ -211,6 +199,17 @@ fun RegisterStep3Screen(
                 Spacer(modifier = Modifier.height(32.dp))
             }
         }
+    }
+}
+
+@Preview(
+    name = "Register Step 3 - PSE",
+    showBackground = true,
+)
+@Composable
+fun RegisterStep3ScreenPreview() {
+    NetflixBasicNavigationTheme {
+        RegisterStep3Screen(onBackClick = {}, onNextClick = {})
     }
 }
 
@@ -780,4 +779,3 @@ fun PaymentLogosRow() {
         }
     }
 }
-

@@ -23,20 +23,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import me.fabiansuarez.compose.lab.netflixbasicnavigation.data.models.NetflixPlan
 import me.fabiansuarez.compose.lab.netflixbasicnavigation.data.netflixPlans
-import me.fabiansuarez.compose.lab.netflixbasicnavigation.ui.navigation.NetflixRoutes
 import me.fabiansuarez.compose.lab.netflixbasicnavigation.ui.theme.*
 
-@Preview(
-    name = "Netflix Register Step 2 - Elige tu plan",
-    showBackground = true,
-    showSystemUi = true
-)
 @Composable
-fun RegisterStep2Screen(navController: NavController = rememberNavController()) {
+fun RegisterStep2Screen(
+    onBackClick: () -> Unit,
+    onNextClick: () -> Unit
+) {
     val scrollState = rememberScrollState()
     var selectedPlan by remember { mutableStateOf(3) } // Premium selected by default
 
@@ -53,9 +48,7 @@ fun RegisterStep2Screen(navController: NavController = rememberNavController()) 
 
             // ── Top Bar ──────────────────────────────────────────────────────
             RegisterTopBar(
-                onBackClick = {
-                    navController.popBackStack()
-                },
+                onBackClick = onBackClick,
                 step = 2,
                 totalSteps = 3
             )
@@ -113,9 +106,7 @@ fun RegisterStep2Screen(navController: NavController = rememberNavController()) 
 
                 // ── Continue button ──────────────────────────────────────────
                 Button(
-                    onClick = {
-                        navController.navigate(NetflixRoutes.REGISTER_STEP3)
-                    },
+                    onClick = onNextClick,
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(52.dp),
@@ -154,6 +145,18 @@ fun RegisterStep2Screen(navController: NavController = rememberNavController()) 
                 Spacer(modifier = Modifier.height(32.dp))
             }
         }
+    }
+}
+
+@Preview(
+    name = "Netflix Register Step 2 - Elige tu plan",
+    showBackground = true,
+    showSystemUi = true
+)
+@Composable
+fun RegisterStep2ScreenPreview() {
+    NetflixBasicNavigationTheme {
+        RegisterStep2Screen(onBackClick = {}, onNextClick = {})
     }
 }
 

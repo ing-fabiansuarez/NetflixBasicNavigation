@@ -27,30 +27,61 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            val navController = rememberNavController()
-            NavHost(navController = navController, startDestination = NetflixRoutes.LOGIN) {
-                composable(NetflixRoutes.LOGIN) {
-                    LoginScreen(
-                        navController = navController
-                    )
-                }
-                composable(NetflixRoutes.REGISTER_STEP1) {
-                    RegisterScreen(
-                        navController = navController
-                    )
-                }
-                composable(NetflixRoutes.REGISTER_STEP2) {
-                    RegisterStep2Screen(
-                        navController = navController
-                    )
-                }
-                composable(NetflixRoutes.REGISTER_STEP3) {
-                    RegisterStep3Screen(
-                        navController = navController
-                    )
-                }
-                composable(NetflixRoutes.HOME) {
-                    HomeScreen()
+            NetflixBasicNavigationTheme {
+                val navController = rememberNavController()
+                NavHost(navController = navController, startDestination = NetflixRoutes.LOGIN) {
+                    composable(NetflixRoutes.LOGIN) {
+                        LoginScreen(
+                            onLoginClick = {
+                                navController.navigate(NetflixRoutes.HOME) {
+                                    popUpTo(NetflixRoutes.LOGIN) { inclusive = true }
+                                }
+                            },
+                            onRegisterClick = {
+                                navController.navigate(NetflixRoutes.REGISTER_STEP1)
+                            }
+                        )
+                    }
+                    composable(NetflixRoutes.REGISTER_STEP1) {
+                        RegisterScreen(
+                            onBackClick = {
+                                navController.popBackStack()
+                            },
+                            onNextClick = {
+                                navController.navigate(NetflixRoutes.REGISTER_STEP2)
+                            },
+                            onLoginClick = {
+                                navController.navigate(NetflixRoutes.LOGIN) {
+                                    popUpTo(NetflixRoutes.LOGIN) { inclusive = true }
+                                }
+                            }
+                        )
+                    }
+                    composable(NetflixRoutes.REGISTER_STEP2) {
+                        RegisterStep2Screen(
+                            onBackClick = {
+                                navController.popBackStack()
+                            },
+                            onNextClick = {
+                                navController.navigate(NetflixRoutes.REGISTER_STEP3)
+                            }
+                        )
+                    }
+                    composable(NetflixRoutes.REGISTER_STEP3) {
+                        RegisterStep3Screen(
+                            onBackClick = {
+                                navController.popBackStack()
+                            },
+                            onNextClick = {
+                                navController.navigate(NetflixRoutes.HOME) {
+                                    popUpTo(NetflixRoutes.LOGIN) { inclusive = true }
+                                }
+                            }
+                        )
+                    }
+                    composable(NetflixRoutes.HOME) {
+                        HomeScreen()
+                    }
                 }
             }
         }

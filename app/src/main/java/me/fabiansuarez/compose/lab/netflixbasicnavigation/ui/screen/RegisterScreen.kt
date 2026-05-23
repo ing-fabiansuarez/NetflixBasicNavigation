@@ -23,20 +23,16 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import me.fabiansuarez.compose.lab.netflixbasicnavigation.ui.navigation.NetflixRoutes
 import me.fabiansuarez.compose.lab.netflixbasicnavigation.ui.theme.*
 
 // ─── RegisterScreen ───────────────────────────────────────────────────────────
-@Preview(
-    name = "Netflix Register Screen",
-    showBackground = true,
-    showSystemUi = true
-)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RegisterScreen(navController: NavController = rememberNavController()) {
+fun RegisterScreen(
+    onBackClick: () -> Unit,
+    onNextClick: () -> Unit,
+    onLoginClick: () -> Unit
+) {
     val scrollState = rememberScrollState()
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -67,9 +63,7 @@ fun RegisterScreen(navController: NavController = rememberNavController()) {
             ) {
                 // Back arrow
                 IconButton(
-                    onClick = {
-                        navController.popBackStack()
-                    },
+                    onClick = onBackClick,
                     modifier = Modifier.align(Alignment.CenterStart)
                 ) {
                     Icon(
@@ -207,9 +201,7 @@ fun RegisterScreen(navController: NavController = rememberNavController()) {
 
                 // ── Continue button ──────────────────────────────────────────
                 Button(
-                    onClick = {
-                        navController.navigate(NetflixRoutes.REGISTER_STEP2)
-                    },
+                    onClick = onNextClick,
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(52.dp),
@@ -243,7 +235,7 @@ fun RegisterScreen(navController: NavController = rememberNavController()) {
                         color = NetflixWhite,
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Medium,
-                        modifier = Modifier.clickable { }
+                        modifier = Modifier.clickable { onLoginClick() }
                     )
                 }
 
@@ -270,6 +262,22 @@ fun RegisterScreen(navController: NavController = rememberNavController()) {
                 Spacer(modifier = Modifier.height(32.dp))
             }
         }
+    }
+}
+
+@Preview(
+    name = "Netflix Register Screen",
+    showBackground = true,
+    showSystemUi = true
+)
+@Composable
+fun RegisterScreenPreview() {
+    NetflixBasicNavigationTheme {
+        RegisterScreen(
+            onBackClick = {},
+            onNextClick = {},
+            onLoginClick = {}
+        )
     }
 }
 
@@ -347,4 +355,3 @@ fun PasswordRequirementsCard() {
         }
     }
 }
-
